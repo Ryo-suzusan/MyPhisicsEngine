@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 public class CameraController : MonoBehaviour
 {
@@ -20,20 +18,20 @@ public class CameraController : MonoBehaviour
     Vector2 startMousePos;
     // カメラ回転の視点情報
     Quaternion presentCamRot;
-    Vector3 presentCamPos;
     // 初期状態
     Quaternion initialCamRot;
     Vector3 initialCamPos;
-    // UIメッセージの表示
-    bool uiMessageActive;
 
     // キーボード状態
-    Keyboard keyboard = Keyboard.current;
+    Keyboard keyboard;
     // マウス状態
-    Mouse mouse = Mouse.current;
+    Mouse mouse;
 
     private void Start()
     {
+        keyboard = Keyboard.current;
+        mouse = Mouse.current;
+
         camTransform = this.gameObject.transform;
 
         initialCamRot = this.gameObject.transform.rotation;
@@ -76,6 +74,8 @@ public class CameraController : MonoBehaviour
         float y = (startMousePos.y - mouse.position.ReadValue().y) / Screen.height;
 
         float eulerX = presentCamRot.x + y * mouseSensitive;
+        eulerX = Math.Min(90, eulerX);
+        eulerX = Math.Max(-90, eulerX);
         float eulerY = presentCamRot.y + x * mouseSensitive;
 
         camTransform.rotation = Quaternion.Euler(eulerX, eulerY, 0);
