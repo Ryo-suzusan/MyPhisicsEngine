@@ -29,15 +29,11 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        keyboard = Keyboard.current;
-        mouse = Mouse.current;
-
+        this.gameObject.transform.rotation = Quaternion.identity;
         camTransform = this.gameObject.transform;
 
         initialCamRot = this.gameObject.transform.rotation;
         initialCamPos = this.gameObject.transform.position;
-
-        startMousePos = mouse.position.ReadValue();
     }
 
     private void Update()
@@ -69,6 +65,14 @@ public class CameraController : MonoBehaviour
     private void CameraRotationControl()
     {
         if (mouse == null) return;
+        if (!mouse.rightButton.isPressed) return;
+
+        if (mouse.rightButton.wasPressedThisFrame)
+        {
+            startMousePos = mouse.position.ReadValue();
+            presentCamRot.x = camTransform.rotation.eulerAngles.x;
+            presentCamRot.y = camTransform.rotation.eulerAngles.y;
+        }
 
         float x = (startMousePos.x - mouse.position.ReadValue().x) / Screen.width;
         float y = (startMousePos.y - mouse.position.ReadValue().y) / Screen.height;
@@ -85,6 +89,12 @@ public class CameraController : MonoBehaviour
     private void CameraPositionControl()
     {
         if (keyboard == null) return;
+        if (!mouse.rightButton.isPressed) return;
+
+        if (mouse.rightButton.wasPressedThisFrame)
+        {
+            startMousePos = mouse.position.ReadValue();
+        }
 
         Vector3 camPos = camTransform.position;
 
@@ -98,11 +108,11 @@ public class CameraController : MonoBehaviour
         }
         if (keyboard.eKey.isPressed)
         {
-            camPos.y += Time.deltaTime * positionStep;
+            camPos += camTransform.up * Time.deltaTime * positionStep;
         }
         if (keyboard.qKey.isPressed)
         {
-            camPos.y -= Time.deltaTime * positionStep;
+            camPos -= camTransform.up * Time.deltaTime * positionStep;
         }
         if (keyboard.wKey.isPressed)
         {
