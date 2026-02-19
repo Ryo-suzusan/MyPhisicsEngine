@@ -34,6 +34,8 @@ public class Sphere : MonoBehaviour
 
     private void FixedUpdate()
     {
+        this.gameObject.transform.position = position;
+
         SimulatePhisics();
         CreateMesh();
     }
@@ -135,7 +137,7 @@ public class Sphere : MonoBehaviour
         }
 
         // レンダリング
-        Mesh mesh = new Mesh();
+        mesh = new Mesh();
         mesh.Clear();
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0);
