@@ -5,7 +5,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-[ExecuteInEditMode]
 
 public class Sphere : MonoBehaviour
 {
@@ -31,6 +30,13 @@ public class Sphere : MonoBehaviour
     {
         mesh = GetComponent<Mesh>();
         meshFilter = GetComponent<MeshFilter>();
+    }
+
+    private void FixedUpdate()
+    {
+        this.gameObject.transform.position = position;
+
+        SimulatePhisics();
         CreateMesh();
     }
 
@@ -43,7 +49,7 @@ public class Sphere : MonoBehaviour
         // 頂点設定
         {
             // てっぺん
-            vertices.Add(new Vector3(0, radius, 0));
+            vertices.Add(new Vector3(0, radius, 0) + position);
 
             float x, y, z;
             for (int p = 1; p < dividedInVertical; p++)
@@ -57,12 +63,12 @@ public class Sphere : MonoBehaviour
                 {
                     x = Mathf.Cos(Mathf.Deg2Rad * q * 360f / dividedInHorizontal) * t;
                     z = Mathf.Sin(Mathf.Deg2Rad * q * 360f / dividedInHorizontal) * t;
-                    vertices.Add(new Vector3(x, y, z));
+                    vertices.Add(new Vector3(x, y, z) + position);
                 }
             }
 
             // 底
-            vertices.Add(new Vector3(0, -radius, 0));
+            vertices.Add(new Vector3(0, -radius, 0) + position);
         }
 
         // 三角形生成
@@ -131,13 +137,13 @@ public class Sphere : MonoBehaviour
         }
 
         // レンダリング
-        Mesh mesh = new Mesh();
+        mesh = new Mesh();
         mesh.Clear();
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0);
         mesh.SetIndices(triangles, MeshTopology.Triangles, 0);  // MeshTopologyを変更すれば別の描画形式にできる
         mesh.RecalculateNormals();
-        mesh.name = "Sphere";
+        mesh.name = "MySphere";
 
         meshFilter.mesh = mesh;
     }
